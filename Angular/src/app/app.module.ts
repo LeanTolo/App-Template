@@ -8,6 +8,7 @@ import { DirectiveComponent } from './components/directive/directive.component';
 import { ClientsComponent } from './components/clients/clients.component';
 import { ClientService } from './services/clients/client.service';
 import { RouterModule, Routes } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 
 const routes: Routes = [
@@ -26,6 +27,7 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     RouterModule.forRoot(routes)
   ],
   providers: [ClientService],
