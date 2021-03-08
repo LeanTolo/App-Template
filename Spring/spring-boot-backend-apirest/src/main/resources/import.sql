@@ -1,0 +1,12 @@
+INSERT INTO clients (name, surname, email, created_date) VALUES('Lean','Toloza','leandro@email.com','2010-01-01');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Lucas','Toledo','lucas@email.com','2010-01-02');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Pedro','Toloza','pedro@email.com','2010-01-03');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Juan','Toloza','juan@email.com','2010-01-04');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Carlos','Toloza','carlos@email.com','2010-01-05');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Lautaro','Toloza','lautaro@email.com','2010-01-11');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Facundo','Toloza','facundo@email.com','2010-01-06');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Martin','Toloza','martin@email.com','2010-01-07');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Pepe','Toloza','pepe@email.com','2010-01-08');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Nico','Toloza','nico@email.com','2010-01-09');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Manuel','Toloza','manuel@email.com','2010-01-22');
+INSERT INTO clients (name, surname, email, created_date) VALUES('Augusto','Toloza','augusto@email.com','2010-01-23');

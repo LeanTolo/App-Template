@@ -5,18 +5,30 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { DirectiveComponent } from './components/directive/directive.component';
+import { ClientsComponent } from './components/clients/clients.component';
+import { ClientService } from './services/clients/client.service';
+import { RouterModule, Routes } from '@angular/router';
+
+
+const routes: Routes = [
+  {path: '', redirectTo: '/clients', pathMatch: 'full' },
+  {path: 'directive', component: DirectiveComponent},
+  {path: 'clients', component: ClientsComponent},
+];
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    DirectiveComponent
+    DirectiveComponent,
+    ClientsComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [ClientService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
