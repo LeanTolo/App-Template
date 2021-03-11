@@ -3,6 +3,10 @@
   <div class="card-body text-dark">
     <h5 class="card-title">List of Clients</h5>
 
+      <div class="my-2 text-left">
+        <button class="btn btn-rounded btn-primary" type="button" [routerLink] = "['/clients/form']">Create Client</button>
+      </div>
+
       <table class="table">
         <thead>
           <tr>
@@ -11,6 +15,8 @@
             <th>SurName</th>
             <th>Created Date</th>
             <th>Email</th>
+            <th>Edit</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -20,6 +26,12 @@
             <td>{{ cli.surname }}</td>
             <td>{{ cli.createdDate }}</td>
             <td>{{ cli.email }}</td>
+            <td>
+              <button type="button" name="edit" [routerLink]="['/clients/form', cli.id]" class="btn btn-primary btn-sm" >Edit</button>
+            </td>
+            <td>
+              <button type="button" name="delete" (click)='delete(cli)' class="btn btn-danger btn-sm">Delete</button>
+            </td>
           </tr>
         </tbody>
       </table>
