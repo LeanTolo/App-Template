@@ -12,25 +12,37 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+
+
+import lombok.Data;
 
 @Entity
 @Table(name="clients")
+@Data
 public class Client implements Serializable{
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotEmpty
+	@Size(min=3, max=12)
 	@Column(nullable=false)
 	private String name;
 	
+	@NotEmpty
+	@Email
 	@Column(nullable=false, unique=true)
 	private String email;
 	
+	@NotEmpty
+	@Size(min=3, max=12)
 	@Column(nullable=false)
 	private String surname;
-	
-	
+		
 	@Column(name="created_date")
 	@Temporal(TemporalType.DATE)
 	private Date createdDate;
@@ -38,46 +50,6 @@ public class Client implements Serializable{
 	@PrePersist
 	public void prePersist() {
 		createdDate = new Date();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;			
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
 	}
 	
 	/**

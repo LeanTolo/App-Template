@@ -30,10 +30,17 @@ export class ClientService {
     );
   }
 
-  create(client: Client) : Observable<any> {
+  create(client: Client) : Observable<Client> {
     return this.http.post<any>(this.urlEndPoint, client, {headers: this.httpHeaders}).pipe(
+      map((response: any) => response.client as Client),
       catchError(e =>{
+
+        if (e.status == 400){
+            return throwError(e);
+        }
+
         console.error(e.error.message);
+        console.error(e.error.errors);
         swal.fire(e.error.message,e.error.error, 'error');
         return throwError(e);
       })
@@ -54,6 +61,11 @@ export class ClientService {
   update(client: Client): Observable<any>{
     return this.http.put<any>(`${this.urlEndPoint}/${client.id}`, client, {headers: this.httpHeaders}).pipe(
       catchError(e =>{
+
+        if (e.status == 400){
+            return throwError(e);
+        }
+
         console.error(e.error.message);
         swal.fire(e.error.message,e.error.error, 'error');
         return throwError(e);
