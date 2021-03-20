@@ -1,33 +1,47 @@
 import { Injectable } from '@angular/core';
 import { Client } from  '../../components/clients/client';
-import { CLIENTS } from '../../components/clients/clients.json';
 import { of, Observable, throwError } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
+import { map, catchError, tap } from 'rxjs/operators';
 import swal from 'sweetalert2';
 
 import { Router } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
-
+@Injectable()
 export class ClientService {
 
   private urlEndPoint: string = 'http://localhost:8080/api/clients';
 
-  constructor(private http: HttpClient, private router: Router) { }
-
   private httpHeaders = new HttpHeaders({'Content-type': 'application/json'})
+
+  constructor(private http: HttpClient, private router: Router) { }
 
 
 //lo hacemos de tipo stream para que spring no frene el motor de angular y sea reactivo
 //hacemos un objeto observable y observamos cambios en el sujeto, notificandole a los observadores los cambios
 //entonces sin necesidad de refrescar todo, se actualizan los datos de manera responsive
-  getClients(): Observable<Client[]>{
-    return this.http.get(this.urlEndPoint).pipe(
-      map( (response) => response as Client[] )
-    );
+  getClients(page: number): Observable<any>{
+
+    return this.http.get(this.urlEndPoint + '/page/' + page).pipe(
+          tap((response: any) => {
+            console.log('ClientService: tap 1');
+            (response.content as Client[]).forEach(client => console.log(client.name));
+          }),
+          map((response: any) => {
+            (response.content as Client[]).map(client => {
+              client.name = client.name.toUpperCase();
+              //let datePipe = new DatePipe('es');
+              //cliente.createAt = datePipe.transform(cliente.createAt, 'EEEE dd, MMMM yyyy');
+              //cliente.createAt = formatDate(cliente.createAt, 'dd-MM-yyyy', 'es');
+              return client;
+            });
+            return response;
+          }),
+          tap(response => {
+            console.log('ClienteService: tap 2');
+            (response.content as Client[]).forEach(client => console.log(client.name));
+          })
+        );
   }
 
   create(client: Client) : Observable<Client> {
@@ -81,6 +95,17 @@ export class ClientService {
         return throwError(e);
       })
     );
+  }
+
+  uploadPhoto(file: File, id): Observable<HttpEvent<{}>> {
+
+    let formData = new FormData();
+    formData.append("file", file);
+    formData.append("id", id);
+    const req = new HttpRequest('POST', `${this.urlEndPoint}/upload`, formData, {
+      reportProgress: true
+    });
+    return this.http.request(req);
   }
 
 }

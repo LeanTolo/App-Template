@@ -1,40 +1,42 @@
-<div class="card border-dark mb-3" >
-  <div class="card-header">Clients</div>
-  <div class="card-body text-dark">
-    <h5 class="card-title">List of Clients</h5>
-
-      <div class="my-2 text-left">
-        <button class="btn btn-rounded btn-primary" type="button" [routerLink] = "['/clients/form']">Create Client</button>
-      </div>
-
-      <table class="table">
-        <thead>
-          <tr>
-            <th >Id</th>
-            <th >Name</th>
-            <th>SurName</th>
-            <th>Created Date</th>
-            <th>Email</th>
-            <th>Edit</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let cli of clients">
-            <td>{{ cli.id }}</td>
-            <td>{{ cli.name }}</td>
-            <td>{{ cli.surname }}</td>
-            <td>{{ cli.createdDate }}</td>
-            <td>{{ cli.email }}</td>
-            <td>
-              <button type="button" name="edit" [routerLink]="['/clients/form', cli.id]" class="btn btn-primary btn-sm" >Edit</button>
-            </td>
-            <td>
-              <button type="button" name="delete" (click)='delete(cli)' class="btn btn-danger btn-sm">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+<div class="card border-primary mb-3">
+  <div class="card-header">List Of Clients</div>
+  <div class="card-body text-primary">
+    <div class="my-2 text-left">
+      <button class="btn btn-rounded btn-primary" type="button" [routerLink]="['/clients/form']">
+        Create Client
+      </button>
+    </div>
+    <div *ngIf="clients?.length == 0" class="alert alert-info">
+      No Data In Database!
+    </div>
+    <table class="table table-bordered table-striped" *ngIf="clients?.length>0">
+      <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">SurName</th>
+          <th scope="col">Created Date</th>
+          <th scope="col">Email</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cli of clients">
+          <td><button type="button" [routerLink]="['/clients/detail', cli.id]" class="btn btn-success btn-sm">{{ cli.id }}</button></td>
+          <td>{{ cli.name }}</td>
+          <td>{{ cli.surname | uppercase }}</td>
+          <td>{{ cli.createdDate | date:"EEEE dd, MMMM yyyy"}}</td>
+          <td>{{ cli.email }}</td>
+          <td>
+            <button type="button" name="edit" [routerLink]="['/clients/form', cli.id]" class="btn btn-primary btn-sm">Edit</button>
+          </td>
+          <td>
+            <button type="button" name="delete" (click)='delete(cli)' class="btn btn-danger btn-sm">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <paginator-nav *ngIf="paginator" [paginator]="paginator"></paginator-nav>
   </div>
 </div>

@@ -29,16 +29,19 @@ public class Client implements Serializable{
 	private Long id;
 	
 	@NotEmpty
+	@NotNull
 	@Size(min=3, max=12)
 	@Column(nullable=false)
 	private String name;
 	
 	@NotEmpty
+	@NotNull
 	@Email
 	@Column(nullable=false, unique=true)
 	private String email;
 	
 	@NotEmpty
+	@NotNull
 	@Size(min=3, max=12)
 	@Column(nullable=false)
 	private String surname;
@@ -46,6 +49,8 @@ public class Client implements Serializable{
 	@Column(name="created_date")
 	@Temporal(TemporalType.DATE)
 	private Date createdDate;
+	
+	private String photo;
 	
 	@PrePersist
 	public void prePersist() {

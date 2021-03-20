@@ -1,6 +1,8 @@
 package com.LeandroToloza.springboot.backend.apirest.controllers;
 
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,10 +28,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+
 
 import com.LeandroToloza.springboot.backend.apirest.models.entity.Client;
 import com.LeandroToloza.springboot.backend.apirest.models.services.IClientService;
+import com.LeandroToloza.springboot.backend.apirest.models.services.IUploadFileService;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @Validated
@@ -37,9 +48,18 @@ public class ClientRestController {
 	@Autowired
 	private IClientService clientService;
 	
+	@Autowired
+	private IUploadFileService uploadService;
+	
 	@GetMapping("/clients")
 	public List<Client> index(){
 		return clientService.findAll();
+	}
+	
+	@GetMapping("/clients/page/{page}")
+	public Page<Client> index(@PathVariable Integer page){
+		Pageable pageable = PageRequest.of(page, 4); // show 4 per page
+		return clientService.findAll(pageable);
 	}
 	
 	@GetMapping("/clients/{id}")
@@ -167,6 +187,56 @@ public class ClientRestController {
 		
 		return new ResponseEntity<Map<String,Object>>(response, HttpStatus.OK);
 		
+	}
+	
+	@PostMapping("/clients/upload")
+	public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file, @RequestParam("id") Long id){
+		Map<String, Object> response = new HashMap<>();
+		
+		Client client = clientService.findById(id);
+		
+		if(!file.isEmpty()) {
+
+			String fileName = null;
+			try {
+				fileName = uploadService.copy(file);
+			} catch (IOException e) {
+				response.put("message", "Error uploading photo");
+				response.put("error", e.getMessage().concat(": ").concat(e.getCause().getMessage()));
+				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+			String lastPhotoName = client.getPhoto();
+			
+			uploadService.delete(lastPhotoName);
+						
+			client.setPhoto(fileName);
+			
+			clientService.save(client);
+			
+			response.put("client", client);
+			response.put("message", "Image Uploaded Successfully: " + fileName);
+			
+		}
+		
+		return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/uploads/img/{photoName:.+}")
+	public ResponseEntity<Resource> showPhoto(@PathVariable String photoName){
+
+		Resource resource = null;
+		
+		try {
+			resource = uploadService.upload(photoName);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+		HttpHeaders header = new HttpHeaders();
+		header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+		
+		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
 	}
 	
 }

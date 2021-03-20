@@ -27,7 +27,7 @@ export class FormComponent implements OnInit {
 
   loadClient(): void{
     this.activatedRoute.params.subscribe(params => {
-      let id = params['id']
+      let id = +params['id']
       if(id){
         this.clientService.getClient(id).subscribe(
           (client) => this.client = client
@@ -43,9 +43,9 @@ export class FormComponent implements OnInit {
         swal.fire('New Client', `${client.name} `, 'success');
       },
       err => {
-        this.errors = err.error.errors;
+        this.errors = err.error.validErrors;
         console.error('Backend Code Error: '+ err.status);
-        console.error(err.error.errors);
+        console.error(err.error.validErrors);
       }
     );
   }
