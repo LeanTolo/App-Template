@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Client } from '../client';
-import { ActivatedRoute } from '@angular/router';
 import swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
 import { ClientService } from 'src/app/services/clients/client.service';
+import { ModalService } from 'src/app/services/clients/modal.service';
 
 @Component({
   selector: 'app-detail',
@@ -12,31 +12,23 @@ import { ClientService } from 'src/app/services/clients/client.service';
 })
 export class DetailComponent implements OnInit {
 
-  client: Client;
+  @Input() client:Client;
+
   title: string = "Client Detail";
   private selectedPhoto: File;
   progress: number = 0;
 
   constructor(private clientService: ClientService,
-    private activatedRoute: ActivatedRoute) { }
+    public modalService: ModalService) { }
 
-    ngOnInit() {
-      this.activatedRoute.paramMap.subscribe(params => {
-        let id: number = +params.get('id');
-        if (id) {
-          this.clientService.getClient(id).subscribe(client => {
-            this.client = client;
-          });
-        }
-      });
-  }
+  ngOnInit() { }
 
   selectPhoto(event) {
     this.selectedPhoto = event.target.files[0];
     this.progress = 0;
     console.log(this.selectedPhoto);
     if (this.selectedPhoto.type.indexOf('image') < 0) {
-      swal.fire('Error seleccionar imagen: ', 'El archivo debe ser del tipo imagen', 'error');
+      swal.fire('Error Choosing Image: ', 'File Must Be An Image', 'error');
       this.selectedPhoto = null;
     }
   }
@@ -44,7 +36,7 @@ export class DetailComponent implements OnInit {
   uploadPhoto() {
 
     if (!this.selectedPhoto) {
-      swal.fire('Error Upload: ', 'Debe seleccionar una foto', 'error');
+      swal.fire('Error Upload: ', 'Must Choose a Photo', 'error');
     } else {
       this.clientService.uploadPhoto(this.selectedPhoto, this.client.id)
         .subscribe(event => {
@@ -53,10 +45,17 @@ export class DetailComponent implements OnInit {
           } else if (event.type === HttpEventType.Response) {
             let response: any = event.body;
             this.client = response.client as Client;
-            swal.fire('La foto se ha subido completamente!', response.mensaje, 'success');
+            this.modalService.uploadNotify.emit(this.client);
+            swal.fire('Photo Uploaded Successfully!', response.mensaje, 'success');
           }
         });
     }
+  }
+
+  closeModal(){
+    this.modalService.closeModal();
+    this.selectPhoto = null;
+    this.progress = 0;
   }
 
 }

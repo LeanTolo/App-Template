@@ -36,6 +36,7 @@ import org.springframework.http.HttpHeaders;
 
 
 import com.LeandroToloza.springboot.backend.apirest.models.entity.Client;
+import com.LeandroToloza.springboot.backend.apirest.models.entity.Region;
 import com.LeandroToloza.springboot.backend.apirest.models.services.IClientService;
 import com.LeandroToloza.springboot.backend.apirest.models.services.IUploadFileService;
 
@@ -151,6 +152,7 @@ public class ClientRestController {
 			actualCli.setSurname(client.getSurname());
 			actualCli.setEmail(client.getEmail());
 			actualCli.setCreatedDate(client.getCreatedDate());
+			actualCli.setCli_region(client.getCli_region());
 			
 			updatedClient = clientService.save(actualCli);
 		}
@@ -202,7 +204,7 @@ public class ClientRestController {
 				fileName = uploadService.copy(file);
 			} catch (IOException e) {
 				response.put("message", "Error uploading photo");
-				response.put("error", e.getMessage().concat(": ").concat(e.getCause().getMessage()));
+				response.put("error", e.getMessage());
 				return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			
@@ -237,6 +239,11 @@ public class ClientRestController {
 		header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
 		
 		return new ResponseEntity<Resource>(resource, header, HttpStatus.OK);
+	}
+	
+	@GetMapping("/clients/regions")
+	public List<Region> listRegions(){
+		return clientService.findAllRegions();
 	}
 	
 }

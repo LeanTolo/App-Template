@@ -5,15 +5,21 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.validation.constraints.*;
 
 
@@ -46,9 +52,15 @@ public class Client implements Serializable{
 	@Column(nullable=false)
 	private String surname;
 		
-	@Column(name="created_date")
+	@Column(name="created_date")             
 	@Temporal(TemporalType.DATE)
 	private Date createdDate;
+	
+	@NotNull(message="Region must have a value")
+	@ManyToOne(fetch=FetchType.LAZY) // slowcharge, it generate a proxy to REGION
+	@JoinColumn(name="region_id") //get the id from Region
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // we ignore some proxyes from LAZY
+	private Region cli_region;
 	
 	private String photo;
 	

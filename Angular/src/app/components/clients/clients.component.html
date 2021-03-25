@@ -1,3 +1,4 @@
+<app-detail *ngIf="selectedClient" [client]="selectedClient"> </app-detail>
 <div class="card border-primary mb-3">
   <div class="card-header">List Of Clients</div>
   <div class="card-body text-primary">
@@ -22,17 +23,23 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let cli of clients">
-          <td><button type="button" [routerLink]="['/clients/detail', cli.id]" class="btn btn-success btn-sm">{{ cli.id }}</button></td>
-          <td>{{ cli.name }}</td>
-          <td>{{ cli.surname | uppercase }}</td>
-          <td>{{ cli.createdDate | date:"EEEE dd, MMMM yyyy"}}</td>
-          <td>{{ cli.email }}</td>
+        <tr *ngFor="let client of clients">
           <td>
-            <button type="button" name="edit" [routerLink]="['/clients/form', cli.id]" class="btn btn-primary btn-sm">Edit</button>
+            <img (click)="openModal(client)" *ngIf="client?.photo" src="http://localhost:8080/api/uploads/img/{{client.photo}}" alt="{{client.photo}}" class="img-thumbnail rounded"
+            style="width:64px; cursor:pointer;">
+
+            <img (click)="openModal(client)" *ngIf="!client?.photo" src="http://localhost:8080/api/uploads/img/no-user.png" alt="No Photo" class="img-thumbnail rounded"
+            style="width:64px; cursor:pointer;">
+          </td>
+          <td>{{ client.name }}</td>
+          <td>{{ client.surname | uppercase }}</td>
+          <td>{{ client.createdDate | date:"EEEE dd, MMMM yyyy"}}</td>
+          <td>{{ client.email }}</td>
+          <td>
+            <button type="button" name="edit" [routerLink]="['/clients/form', client.id]" class="btn btn-primary btn-sm">Edit</button>
           </td>
           <td>
-            <button type="button" name="delete" (click)='delete(cli)' class="btn btn-danger btn-sm">Delete</button>
+            <button type="button" name="delete" (click)='delete(client)' class="btn btn-danger btn-sm">Delete</button>
           </td>
         </tr>
       </tbody>

@@ -6,6 +6,7 @@ import { map, catchError, tap } from 'rxjs/operators';
 import swal from 'sweetalert2';
 
 import { Router } from '@angular/router';
+import { Region } from 'src/app/components/clients/region';
 
 @Injectable()
 export class ClientService {
@@ -16,6 +17,9 @@ export class ClientService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
+  getRegions(): Observable<Region[]>{
+    return this.http.get<Region[]>(this.urlEndPoint + '/regions');
+  }
 
 //lo hacemos de tipo stream para que spring no frene el motor de angular y sea reactivo
 //hacemos un objeto observable y observamos cambios en el sujeto, notificandole a los observadores los cambios

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Client } from './client';
 import { ClientService } from '../../services/clients/client.service';
+import { ModalService } from '../../services/clients/modal.service';
 import swal from 'sweetalert2';
 import { tap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
@@ -14,9 +15,11 @@ export class ClientsComponent implements OnInit {
 
   clients: Client[];
   paginator: any;
+  selectedClient: Client;
 
   constructor(public clientService: ClientService,
-    private activatedRoute: ActivatedRoute) { }
+    private activatedRoute: ActivatedRoute,
+  private modalService: ModalService) { }
 
   ngOnInit(){
     this.activatedRoute.paramMap.subscribe(params => {
@@ -37,6 +40,15 @@ export class ClientsComponent implements OnInit {
           this.paginator = response;
         });
     });
+
+    this.modalService.uploadNotify.subscribe(client =>{
+      this.clients = this.clients.map(originalClient =>{
+        if(client.id == originalClient.id){
+          originalClient.photo = client.photo;
+        }
+        return originalClient;
+      })
+    })
   }
 
   delete(client: Client): void{
@@ -76,6 +88,11 @@ export class ClientsComponent implements OnInit {
       )
     }
     })
+  }
+
+  openModal(client: Client){
+    this.selectedClient = client;
+    this.modalService.openModal();
   }
 
 }

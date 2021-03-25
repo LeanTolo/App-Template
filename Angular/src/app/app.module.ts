@@ -4,6 +4,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -12,15 +14,14 @@ import { DirectiveComponent } from './components/directive/directive.component';
 import { ClientsComponent } from './components/clients/clients.component';
 import { FormComponent } from './components/form/form.component';
 import { DialogTitleComponent } from './components/dialogs/dialog-title/dialog-title.component';
-
-import { ClientService } from './services/clients/client.service';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogModule } from '@angular/material/dialog';
 import { PaginatorComponent } from './components/paginator/paginator.component';
 import { DetailComponent } from './components/clients/detail/detail.component';
 
+import { ClientService } from './services/clients/client.service';
+
 import localeEN from '@angular/common/locales/en';
 import { registerLocaleData } from '@angular/common';
+import { MatNativeDateModule } from '@angular/material/core';
 
 registerLocaleData(localeEN, 'en');
 
@@ -30,8 +31,7 @@ const routes: Routes = [
   {path: 'clients', component: ClientsComponent},
   {path: 'clients/page/:page', component: ClientsComponent},
   {path: 'clients/form', component: FormComponent},
-  {path: 'clients/form/:id', component: FormComponent},
-  {path: 'clients/detail/:id', component: DetailComponent }
+  {path: 'clients/form/:id', component: FormComponent}
 ];
 
 @NgModule({
@@ -54,9 +54,13 @@ const routes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
-  providers: [ClientService, { provide: LOCALE_ID, useValue: 'en' }],
+  providers: [ClientService,
+    { provide: LOCALE_ID, useValue: 'en' },
+    MatDatepickerModule,
+    MatNativeDateModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
